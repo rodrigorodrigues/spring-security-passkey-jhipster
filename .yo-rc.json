@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "session",
+    "baseName": "jhipsterPasskey",
+    "buildTool": "maven",
+    "cacheProvider": "redis",
+    "clientFramework": "vue",
+    "clientTestFrameworks": [],
+    "clientTheme": "none",
+    "creationTimestamp": 1739377882860,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "enableHibernateCache": true,
+    "enableTranslation": false,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "8.9.0",
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "en",
+    "packageName": "com.github.jhipster.passkey",
+    "prodDatabaseType": "postgresql",
+    "reactive": false,
+    "rememberMeKey": "a473a8e798b5d123fd2edce82bd40ad338360ea93bdf50b817f6ba8a2af9fe9e43ef54744ea46c19ff686846dfb0c61ccb62",
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": [],
+    "withAdminUi": false
+  }
+}
