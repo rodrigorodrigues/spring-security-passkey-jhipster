@@ -1,16 +1,11 @@
 package com.github.jhipster.passkey.config;
 
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
-import javax.cache.configuration.MutableConfiguration;
-import javax.cache.expiry.CreatedExpiryPolicy;
-import javax.cache.expiry.Duration;
+import java.time.Duration;
+import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.ExpiryPolicyBuilder;
+import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.jsr107.Eh107Configuration;
 import org.hibernate.cache.jcache.ConfigSettings;
-import org.redisson.Redisson;
-import org.redisson.config.ClusterServersConfig;
-import org.redisson.config.Config;
-import org.redisson.config.SingleServerConfig;
-import org.redisson.jcache.configuration.RedissonConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
@@ -18,7 +13,6 @@ import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.info.GitProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tech.jhipster.config.JHipsterProperties;
@@ -31,43 +25,20 @@ public class CacheConfiguration {
     private GitProperties gitProperties;
     private BuildProperties buildProperties;
 
-    @Bean
-    public javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration(JHipsterProperties jHipsterProperties) {
-        MutableConfiguration<Object, Object> jcacheConfig = new MutableConfiguration<>();
+    private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
 
-        URI redisUri = URI.create(jHipsterProperties.getCache().getRedis().getServer()[0]);
+    public CacheConfiguration(JHipsterProperties jHipsterProperties) {
+        JHipsterProperties.Cache.Ehcache ehcache = jHipsterProperties.getCache().getEhcache();
 
-        Config config = new Config();
-        // Fix Hibernate lazy initialization https://github.com/jhipster/generator-jhipster/issues/22889
-        config.setCodec(new org.redisson.codec.SerializationCodec());
-        if (jHipsterProperties.getCache().getRedis().isCluster()) {
-            ClusterServersConfig clusterServersConfig = config
-                .useClusterServers()
-                .setMasterConnectionPoolSize(jHipsterProperties.getCache().getRedis().getConnectionPoolSize())
-                .setMasterConnectionMinimumIdleSize(jHipsterProperties.getCache().getRedis().getConnectionMinimumIdleSize())
-                .setSubscriptionConnectionPoolSize(jHipsterProperties.getCache().getRedis().getSubscriptionConnectionPoolSize())
-                .addNodeAddress(jHipsterProperties.getCache().getRedis().getServer());
-
-            if (redisUri.getUserInfo() != null) {
-                clusterServersConfig.setPassword(redisUri.getUserInfo().substring(redisUri.getUserInfo().indexOf(':') + 1));
-            }
-        } else {
-            SingleServerConfig singleServerConfig = config
-                .useSingleServer()
-                .setConnectionPoolSize(jHipsterProperties.getCache().getRedis().getConnectionPoolSize())
-                .setConnectionMinimumIdleSize(jHipsterProperties.getCache().getRedis().getConnectionMinimumIdleSize())
-                .setSubscriptionConnectionPoolSize(jHipsterProperties.getCache().getRedis().getSubscriptionConnectionPoolSize())
-                .setAddress(jHipsterProperties.getCache().getRedis().getServer()[0]);
-
-            if (redisUri.getUserInfo() != null) {
-                singleServerConfig.setPassword(redisUri.getUserInfo().substring(redisUri.getUserInfo().indexOf(':') + 1));
-            }
-        }
-        jcacheConfig.setStatisticsEnabled(true);
-        jcacheConfig.setExpiryPolicyFactory(
-            CreatedExpiryPolicy.factoryOf(new Duration(TimeUnit.SECONDS, jHipsterProperties.getCache().getRedis().getExpiration()))
+        jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(
+            CacheConfigurationBuilder.newCacheConfigurationBuilder(
+                Object.class,
+                Object.class,
+                ResourcePoolsBuilder.heap(ehcache.getMaxEntries())
+            )
+                .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ehcache.getTimeToLiveSeconds())))
+                .build()
         );
-        return RedissonConfiguration.fromInstance(Redisson.create(config), jcacheConfig);
     }
 
     @Bean
@@ -76,7 +47,7 @@ public class CacheConfiguration {
     }
 
     @Bean
-    public JCacheManagerCustomizer cacheManagerCustomizer(javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration) {
+    public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
             createCache(cm, com.github.jhipster.passkey.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
             createCache(cm, com.github.jhipster.passkey.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
@@ -85,6 +56,11 @@ public class CacheConfiguration {
             createCache(cm, com.github.jhipster.passkey.domain.User.class.getName() + ".authorities", jcacheConfiguration);
             createCache(cm, com.github.jhipster.passkey.domain.PersistentToken.class.getName(), jcacheConfiguration);
             createCache(cm, com.github.jhipster.passkey.domain.User.class.getName() + ".persistentTokens", jcacheConfiguration);
+            createCache(cm, com.github.jhipster.passkey.domain.Blog.class.getName(), jcacheConfiguration);
+            createCache(cm, com.github.jhipster.passkey.domain.Post.class.getName(), jcacheConfiguration);
+            createCache(cm, com.github.jhipster.passkey.domain.Post.class.getName() + ".tags", jcacheConfiguration);
+            createCache(cm, com.github.jhipster.passkey.domain.Tag.class.getName(), jcacheConfiguration);
+            createCache(cm, com.github.jhipster.passkey.domain.Tag.class.getName() + ".entries", jcacheConfiguration);
             // jhipster-needle-redis-add-entry
         };
     }

@@ -14,6 +14,12 @@
         </template>
         <login-form></login-form>
       </b-modal>
+      <b-modal id="passkey-page" hide-footer lazy>
+        <template #modal-title>
+          <span data-cy="passkeyTitle" id="passkey-title">Register Passkey</span>
+        </template>
+        <passkey-form></passkey-form>
+      </b-modal>
 
       <jhi-footer></jhi-footer>
     </div>

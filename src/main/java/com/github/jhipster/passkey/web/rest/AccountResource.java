@@ -9,19 +9,29 @@ import com.github.jhipster.passkey.service.MailService;
 import com.github.jhipster.passkey.service.UserService;
 import com.github.jhipster.passkey.service.dto.AdminUserDTO;
 import com.github.jhipster.passkey.service.dto.PasswordChangeDTO;
-import com.github.jhipster.passkey.web.rest.errors.*;
+import com.github.jhipster.passkey.web.rest.errors.EmailAlreadyUsedException;
+import com.github.jhipster.passkey.web.rest.errors.InvalidPasswordException;
+import com.github.jhipster.passkey.web.rest.errors.LoginAlreadyUsedException;
 import com.github.jhipster.passkey.web.rest.vm.KeyAndPasswordVM;
 import com.github.jhipster.passkey.web.rest.vm.ManagedUserVM;
+import com.github.jhipster.passkey.webauthn.PublicKeyUserRepository;
 import jakarta.validation.Valid;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
-import java.util.*;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.webauthn.api.CredentialRecord;
+import org.springframework.security.web.webauthn.api.PublicKeyCredentialUserEntity;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -47,17 +57,24 @@ public class AccountResource {
     private final MailService mailService;
 
     private final PersistentTokenRepository persistentTokenRepository;
+    private final PublicKeyUserRepository publicKeyUserRepository;
+
+    private final UserCredentialRepository userCredentialRepository;
 
     public AccountResource(
         UserRepository userRepository,
         UserService userService,
         MailService mailService,
-        PersistentTokenRepository persistentTokenRepository
+        PersistentTokenRepository persistentTokenRepository,
+        PublicKeyUserRepository publicKeyUserRepository,
+        UserCredentialRepository userCredentialRepository
     ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
         this.persistentTokenRepository = persistentTokenRepository;
+        this.publicKeyUserRepository = publicKeyUserRepository;
+        this.userCredentialRepository = userCredentialRepository;
     }
 
     /**
@@ -250,5 +267,33 @@ public class AccountResource {
             password.length() < ManagedUserVM.PASSWORD_MIN_LENGTH ||
             password.length() > ManagedUserVM.PASSWORD_MAX_LENGTH
         );
+    }
+
+    @GetMapping("/account/passkeys")
+    public List<CredentialRecordDto> index(Authentication authentication) {
+        String login = authentication.getName();
+        LOG.debug("Getting passkeys for username: {}", login);
+        PublicKeyCredentialUserEntity usernameKeyCredentialUserEntity = publicKeyUserRepository.findByUsername(login);
+        List<CredentialRecordDto> credentialRecords = new ArrayList<>();
+        if (usernameKeyCredentialUserEntity != null) {
+            credentialRecords = userCredentialRepository
+                .findByUserId(usernameKeyCredentialUserEntity.getId())
+                .stream()
+                .map(CredentialRecordDto::new)
+                .toList();
+        }
+        return credentialRecords;
+    }
+
+    public record CredentialRecordDto(String id, String label, Instant created, Instant lastUsed, long signatureCount) {
+        public CredentialRecordDto(CredentialRecord credentialRecord) {
+            this(
+                credentialRecord.getCredentialId().toBase64UrlString(),
+                credentialRecord.getLabel(),
+                credentialRecord.getCreated(),
+                credentialRecord.getLastUsed(),
+                credentialRecord.getSignatureCount()
+            );
+        }
     }
 }

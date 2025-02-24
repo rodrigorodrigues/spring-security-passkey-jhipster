@@ -3,16 +3,23 @@ package com.github.jhipster.passkey.config;
 import static org.springframework.security.config.Customizer.withDefaults;
 import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
 
-import com.github.jhipster.passkey.security.*;
+import com.github.jhipster.passkey.security.AuthoritiesConstants;
 import com.github.jhipster.passkey.web.filter.SpaWebFilter;
+import com.github.jhipster.passkey.web.rest.AccountResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.function.Supplier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +32,10 @@ import org.springframework.security.web.csrf.*;
 import org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
+import org.springframework.security.web.webauthn.management.MapPublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.MapUserCredentialRepository;
+import org.springframework.security.web.webauthn.management.PublicKeyCredentialUserEntityRepository;
+import org.springframework.security.web.webauthn.management.UserCredentialRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import tech.jhipster.config.JHipsterProperties;
@@ -81,6 +92,7 @@ public class SecurityConfiguration {
                     .requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/finish")).permitAll()
                     .requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN)
+                    .requestMatchers(mvc.pattern("/webauthn/**")).authenticated()
                     .requestMatchers(mvc.pattern("/api/**")).authenticated()
                     .requestMatchers(mvc.pattern("/v3/api-docs/**")).hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers(mvc.pattern("/management/health")).permitAll()
@@ -109,6 +121,12 @@ public class SecurityConfiguration {
                     .failureHandler((request, response, exception) -> response.setStatus(HttpStatus.UNAUTHORIZED.value()))
                     .permitAll()
             )
+            .webAuthn(webAuthn ->
+                webAuthn
+                    .rpName("Spring Security Relying Party")
+                    .rpId("localhost")
+                    .allowedOrigins("http://localhost:8080", "http://localhost:9000")
+            )
             .logout(logout ->
                 logout.logoutUrl("/api/logout").logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()).permitAll()
             );
@@ -120,6 +138,18 @@ public class SecurityConfiguration {
         return new MvcRequestMatcher.Builder(introspector);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    PublicKeyCredentialUserEntityRepository publicKeyCredentialUserEntityRepository() {
+        return new MapPublicKeyCredentialUserEntityRepository();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    UserCredentialRepository userCredentialRepository() {
+        return new MapUserCredentialRepository();
+    }
+
     /**
      * Custom CSRF handler to provide BREACH protection for Single-Page Applications (SPA).
      *
@@ -128,6 +158,8 @@ public class SecurityConfiguration {
      * @see <a href="https://stackoverflow.com/q/74447118/65681">CSRF protection not working with Spring Security 6</a>
      */
     static final class SpaCsrfTokenRequestHandler implements CsrfTokenRequestHandler {
+
+        private static final Logger LOG = LoggerFactory.getLogger(SpaCsrfTokenRequestHandler.class);
 
         private final CsrfTokenRequestHandler plain = new CsrfTokenRequestAttributeHandler();
         private final CsrfTokenRequestHandler xor = new XorCsrfTokenRequestAttributeHandler();
@@ -146,22 +178,32 @@ public class SecurityConfiguration {
 
         @Override
         public String resolveCsrfTokenValue(HttpServletRequest request, CsrfToken csrfToken) {
+            String path = request.getRequestURI().substring(request.getContextPath().length());
+
+            LOG.info("resolveCsrfTokenValue:path: {}", path);
+            LOG.info("csrfTokenHeader: {}", request.getHeader(csrfToken.getHeaderName()));
             /*
              * If the request contains a request header, use CsrfTokenRequestAttributeHandler
              * to resolve the CsrfToken. This applies when a single-page application includes
              * the header value automatically, which was obtained via a cookie containing the
              * raw CsrfToken.
              */
-            if (StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
+            /*if (!path.startsWith("/webauthn/register") && StringUtils.hasText(request.getHeader(csrfToken.getHeaderName()))) {
                 return this.plain.resolveCsrfTokenValue(request, csrfToken);
-            }
+            }*/
             /*
              * In all other cases (e.g. if the request contains a request parameter), use
              * XorCsrfTokenRequestAttributeHandler to resolve the CsrfToken. This applies
              * when a server-side rendered form includes the _csrf request parameter as a
              * hidden input.
              */
-            return this.xor.resolveCsrfTokenValue(request, csrfToken);
+            String token = this.xor.resolveCsrfTokenValue(request, csrfToken);
+            LOG.info("resolveCsrfTokenValue:token: {}", token);
+            if (StringUtils.hasText(token)) {
+                return token;
+            } else {
+                return this.plain.resolveCsrfTokenValue(request, csrfToken);
+            }
         }
     }
 }

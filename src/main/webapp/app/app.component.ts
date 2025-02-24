@@ -3,6 +3,7 @@ import Ribbon from '@/core/ribbon/ribbon.vue';
 import JhiFooter from '@/core/jhi-footer/jhi-footer.vue';
 import JhiNavbar from '@/core/jhi-navbar/jhi-navbar.vue';
 import LoginForm from '@/account/login-form/login-form.vue';
+import PasskeyForm from '@/account/passkeys/passkey-form.vue';
 
 import { useAlertService } from '@/shared/alert/alert.service';
 
@@ -15,6 +16,7 @@ export default defineComponent({
     ribbon: Ribbon,
     'jhi-navbar': JhiNavbar,
     'login-form': LoginForm,
+    'passkey-form': PasskeyForm,
     'jhi-footer': JhiFooter,
   },
   setup() {

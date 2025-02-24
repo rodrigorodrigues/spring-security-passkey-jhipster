@@ -73,6 +73,10 @@
               <span class="no-bold">Account</span>
             </span>
           </template>
+          <b-dropdown-item data-cy="settings" to="/account/passkeys" v-if="authenticated" active-class="active">
+            <font-awesome-icon icon="key" />
+            <span>Passkeys</span>
+          </b-dropdown-item>
           <b-dropdown-item data-cy="settings" to="/account/settings" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="wrench" />
             <span>Settings</span>

@@ -13,9 +13,10 @@
     "devDatabaseType": "postgresql",
     "enableHibernateCache": true,
     "enableTranslation": false,
-    "entities": [],
+    "entities": ["Blog", "Post", "Tag"],
     "feignClient": null,
     "jhipsterVersion": "8.9.0",
+    "lastLiquibaseTimestamp": 1739578665000,
     "microfrontend": null,
     "microfrontends": [],
     "nativeLanguage": "en",
@@ -26,7 +27,7 @@
     "serverPort": null,
     "serviceDiscoveryType": null,
     "syncUserWithIdp": null,
-    "testFrameworks": [],
+    "testFrameworks": ["cypress"],
     "withAdminUi": false
   }
 }

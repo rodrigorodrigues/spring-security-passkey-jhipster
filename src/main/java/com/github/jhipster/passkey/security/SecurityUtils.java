@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.webauthn.authentication.WebAuthnAuthentication;
 
 /**
  * Utility class for Spring Security.
@@ -33,6 +34,8 @@ public final class SecurityUtils {
             return springSecurityUser.getUsername();
         } else if (authentication.getPrincipal() instanceof String s) {
             return s;
+        } else if (authentication instanceof WebAuthnAuthentication webAuthnAuthentication) {
+            return webAuthnAuthentication.getPrincipal().getName();
         }
         return null;
     }

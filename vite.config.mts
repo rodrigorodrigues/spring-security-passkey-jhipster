@@ -53,7 +53,7 @@ const config = defineConfig({
     host: true,
     port: 9000,
     proxy: Object.fromEntries(
-      ['/api', '/management', '/v3/api-docs', '/login'].map(res => [
+      ['/api', '/management', '/v3/api-docs', '/login', '/webauthn', '/default-ui.css'].map(res => [
         res,
         {
           target: 'http://localhost:8080',

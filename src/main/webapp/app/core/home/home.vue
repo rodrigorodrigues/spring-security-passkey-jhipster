@@ -8,8 +8,19 @@
       <p class="lead">This is your homepage</p>
 
       <div>
+        <div class="col-md-8">
+          <b-alert show data-cy="loginError" variant="danger" v-if="authenticationPasskeyError"
+            ><strong>Failed to sign in with Passkey!</strong> Please check your credentials and try again.</b-alert
+          >
+        </div>
+
         <div class="alert alert-success" v-if="authenticated">
           <span v-if="username">You are logged in as user "{{ username }}".</span>
+        </div>
+
+        <div class="alert alert-warning" v-if="!authenticated">
+          <span>If you want to sign in with </span>
+          <a class="alert-link" @click="doPasskeysLogin()">Passkey</a>
         </div>
 
         <div class="alert alert-warning" v-if="!authenticated">

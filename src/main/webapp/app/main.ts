@@ -11,6 +11,7 @@ import JhiItemCountComponent from './shared/jhi-item-count.vue';
 import JhiSortIndicatorComponent from './shared/sort/jhi-sort-indicator.vue';
 import LoginService from './account/login.service';
 import AccountService from './account/account.service';
+import PasskeyService from './account/passkey.service';
 import { setupAxiosInterceptors } from '@/shared/config/axios-interceptor';
 import { useStore } from '@/store';
 
@@ -60,6 +61,8 @@ const app = createApp({
   setup(_props, { emit }) {
     const loginService = new LoginService({ emit });
     provide('loginService', loginService);
+    const passkeyService = new PasskeyService({ emit });
+    provide('passkeyService', passkeyService);
     const store = useStore();
     const accountService = new AccountService(store);
     provide(
@@ -93,13 +96,17 @@ const app = createApp({
         if (status === 401) {
           // Store logged out state.
           store.logout();
-          if (!url.endsWith('api/account') && !url.endsWith('api/authentication')) {
+          if (!url.endsWith('api/account') && !url.endsWith('api/authentication') && !url.endsWith('login/webauthn')) {
             // Ask for a new authentication
             loginService.openLogin();
             return;
           }
         }
-        return Promise.reject(error);
+        if (url.endsWith('login/webauthn')) {
+          return Promise.resolve(error);
+        } else {
+          return Promise.reject(error);
+        }
       },
       error => {
         return Promise.reject(error);

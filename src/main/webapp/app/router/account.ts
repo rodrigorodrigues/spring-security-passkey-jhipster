@@ -7,8 +7,14 @@ const ResetPasswordFinish = () => import('@/account/reset-password/finish/reset-
 const ChangePassword = () => import('@/account/change-password/change-password.vue');
 const Settings = () => import('@/account/settings/settings.vue');
 const Sessions = () => import('@/account/sessions/sessions.vue');
+const JhiPasskeysComponent = () => import('@/account/passkeys/passkeys.vue');
 
 export default [
+  {
+    path: '/account/passkeys',
+    name: 'Passkeys',
+    component: JhiPasskeysComponent,
+  },
   {
     path: '/register',
     name: 'Register',

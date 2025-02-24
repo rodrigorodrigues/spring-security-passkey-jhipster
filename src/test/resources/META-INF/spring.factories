@@ -1,4 +1,6 @@
 org.springframework.test.context.ContextCustomizerFactory = \
     com.github.jhipster.passkey.config.\
     SqlTestContainersSpringContextCustomizerFactory,com.github.jhipster.passkey.\
-    config.RedisTestContainersSpringContextCustomizerFactory
+    config.RedisTestContainersSpringContextCustomizerFactory,com.jhipster.demo.\
+    blog.config.SqlTestContainersSpringContextCustomizerFactory,com.jhipster.\
+    demo.blog.config.RedisTestContainersSpringContextCustomizerFactory
