@@ -1,6 +1,6 @@
 # Spring Security Passkey - Jhipster
 
-POC using Spring Security 6.4 with Passkey and JHipster monolithic application.
+POC using [Spring Security 6.4](https://docs.spring.io/spring-security/reference/servlet/authentication/passkeys.html#page-title) with Passkey and [JHipster](https://www.jhipster.tech) monolithic application.
 
 More details look at https://www.linkedin.com/pulse/passwordless-authentication-spring-security-passkeys-rodrigues-y1oye/?trackingId=ErEvyCD1QAamYFPX6s%2BMGA%3D%3D
 
