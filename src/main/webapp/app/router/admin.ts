@@ -7,31 +7,31 @@ const JhiDocsComponent = () => import('@/admin/docs/docs.vue');
 
 export default [
   {
-    path: '/admin/user-management',
+    path: '/spring-security-passkey/admin/user-management',
     name: 'JhiUser',
     component: JhiUserManagementComponent,
     meta: { authorities: [Authority.ADMIN] },
   },
   {
-    path: '/admin/user-management/new',
+    path: '/spring-security-passkey/admin/user-management/new',
     name: 'JhiUserCreate',
     component: JhiUserManagementEditComponent,
     meta: { authorities: [Authority.ADMIN] },
   },
   {
-    path: '/admin/user-management/:userId/edit',
+    path: '/spring-security-passkey/admin/user-management/:userId/edit',
     name: 'JhiUserEdit',
     component: JhiUserManagementEditComponent,
     meta: { authorities: [Authority.ADMIN] },
   },
   {
-    path: '/admin/user-management/:userId/view',
+    path: '/spring-security-passkey/admin/user-management/:userId/view',
     name: 'JhiUserView',
     component: JhiUserManagementViewComponent,
     meta: { authorities: [Authority.ADMIN] },
   },
   {
-    path: '/admin/docs',
+    path: '/spring-security-passkey/admin/docs',
     name: 'JhiDocsComponent',
     component: JhiDocsComponent,
     meta: { authorities: [Authority.ADMIN] },

@@ -37,13 +37,6 @@ You will only need to run this command when dependencies change in [package.json
 
 We use npm scripts and [Vite][] as our build system.
 
-If you are using redis as a cache, you will have to launch a cache server.
-To start your cache server, run:
-
-```
-docker compose -f src/main/docker/redis.yml up -d
-```
-
 The cache can also be turned off by adding to the application yaml:
 
 ```yaml

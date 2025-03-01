@@ -1,9 +1,7 @@
-import axios from 'axios';
 import { type ComputedRef, defineComponent, inject, type Ref, ref } from 'vue';
 import type AccountService from '@/account/account.service';
 import type LoginService from '@/account/login.service';
 import type PasskeyService from '@/account/passkey.service';
-import { useRoute, useRouter } from 'vue-router';
 
 export default defineComponent({
   compatConfig: { MODE: 3 },

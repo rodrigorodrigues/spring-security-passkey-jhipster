@@ -11,44 +11,44 @@ const JhiPasskeysComponent = () => import('@/account/passkeys/passkeys.vue');
 
 export default [
   {
-    path: '/account/passkeys',
+    path: '/spring-security-passkey/account/passkeys',
     name: 'Passkeys',
     component: JhiPasskeysComponent,
   },
   {
-    path: '/register',
+    path: '/spring-security-passkey/register',
     name: 'Register',
     component: Register,
   },
   {
-    path: '/account/activate',
+    path: '/spring-security-passkey/account/activate',
     name: 'Activate',
     component: Activate,
   },
   {
-    path: '/account/reset/request',
+    path: '/spring-security-passkey/account/reset/request',
     name: 'ResetPasswordInit',
     component: ResetPasswordInit,
   },
   {
-    path: '/account/reset/finish',
+    path: '/spring-security-passkey/account/reset/finish',
     name: 'ResetPasswordFinish',
     component: ResetPasswordFinish,
   },
   {
-    path: '/account/password',
+    path: '/spring-security-passkey/account/password',
     name: 'ChangePassword',
     component: ChangePassword,
     meta: { authorities: [Authority.USER] },
   },
   {
-    path: '/account/sessions',
+    path: '/spring-security-passkey/account/sessions',
     name: 'Sessions',
     component: Sessions,
     meta: { authorities: [Authority.USER] },
   },
   {
-    path: '/account/settings',
+    path: '/spring-security-passkey/account/settings',
     name: 'Settings',
     component: Settings,
     meta: { authorities: [Authority.USER] },

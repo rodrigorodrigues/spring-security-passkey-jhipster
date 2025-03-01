@@ -9,21 +9,22 @@ import pages from '@/router/pages';
 
 export const createRouter = () =>
   createVueRouter({
+    base: '/spring-security-passkey',
     history: createWebHistory(),
     routes: [
       {
-        path: '/',
+        path: '/spring-security-passkey/',
         name: 'Home',
         component: Home,
       },
       {
-        path: '/forbidden',
+        path: '/spring-security-passkey/forbidden',
         name: 'Forbidden',
         component: Error,
         meta: { error403: true },
       },
       {
-        path: '/not-found',
+        path: '/spring-security-passkey/not-found',
         name: 'NotFound',
         component: Error,
         meta: { error404: true },

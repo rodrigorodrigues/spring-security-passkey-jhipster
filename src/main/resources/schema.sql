@@ -32,3 +32,4 @@ CREATE TABLE IF NOT EXISTS credentials_record
     transports                  TEXT
 );
 
+select * from jhi_user;

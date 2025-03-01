@@ -4,7 +4,7 @@
     "authenticationType": "session",
     "baseName": "jhipsterPasskey",
     "buildTool": "maven",
-    "cacheProvider": "redis",
+    "cacheProvider": "ehcache",
     "clientFramework": "vue",
     "clientTestFrameworks": [],
     "clientTheme": "none",

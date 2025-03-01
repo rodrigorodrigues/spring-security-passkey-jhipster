@@ -61,7 +61,6 @@ public class CacheConfiguration {
             createCache(cm, com.github.jhipster.passkey.domain.Post.class.getName() + ".tags", jcacheConfiguration);
             createCache(cm, com.github.jhipster.passkey.domain.Tag.class.getName(), jcacheConfiguration);
             createCache(cm, com.github.jhipster.passkey.domain.Tag.class.getName() + ".entries", jcacheConfiguration);
-            // jhipster-needle-redis-add-entry
         };
     }
 

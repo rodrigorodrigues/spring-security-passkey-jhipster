@@ -33,7 +33,7 @@
         </div>
         <div class="alert alert-warning" v-if="!authenticated">
           <span>You don't have an account yet?</span>&nbsp;
-          <router-link class="alert-link" to="/register">Register a new account</router-link>
+          <router-link class="alert-link" to="/spring-security-passkey/register">Register a new account</router-link>
         </div>
       </div>
 

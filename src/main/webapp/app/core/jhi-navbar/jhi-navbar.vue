@@ -1,6 +1,6 @@
 <template>
   <b-navbar data-cy="navbar" toggleable="md" type="dark" class="jh-navbar">
-    <b-navbar-brand class="logo" b-link to="/">
+    <b-navbar-brand class="logo" b-link to="/spring-security-passkey/">
       <span class="logo-img"></span>
       <span class="navbar-title">JhipsterPasskey</span> <span class="navbar-version">{{ version }}</span>
     </b-navbar-brand>
@@ -18,7 +18,7 @@
 
     <b-collapse is-nav id="header-tabs">
       <b-navbar-nav class="ml-auto">
-        <b-nav-item to="/" exact>
+        <b-nav-item to="/spring-security-passkey/" exact>
           <span>
             <font-awesome-icon icon="home" />
             <span>Home</span>
@@ -49,11 +49,11 @@
               <span class="no-bold">Administration</span>
             </span>
           </template>
-          <b-dropdown-item to="/admin/user-management" active-class="active">
+          <b-dropdown-item to="/spring-security-passkey/admin/user-management" active-class="active">
             <font-awesome-icon icon="users" />
             <span>User management</span>
           </b-dropdown-item>
-          <b-dropdown-item v-if="openAPIEnabled" to="/admin/docs" active-class="active">
+          <b-dropdown-item v-if="openAPIEnabled" to="/spring-security-passkey/admin/docs" active-class="active">
             <font-awesome-icon icon="book" />
             <span>API</span>
           </b-dropdown-item>
@@ -73,19 +73,19 @@
               <span class="no-bold">Account</span>
             </span>
           </template>
-          <b-dropdown-item data-cy="settings" to="/account/passkeys" v-if="authenticated" active-class="active">
+          <b-dropdown-item data-cy="settings" to="/spring-security-passkey/account/passkeys" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="key" />
             <span>Passkeys</span>
           </b-dropdown-item>
-          <b-dropdown-item data-cy="settings" to="/account/settings" v-if="authenticated" active-class="active">
+          <b-dropdown-item data-cy="settings" to="/spring-security-passkey/account/settings" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="wrench" />
             <span>Settings</span>
           </b-dropdown-item>
-          <b-dropdown-item data-cy="passwordItem" to="/account/password" v-if="authenticated" active-class="active">
+          <b-dropdown-item data-cy="passwordItem" to="/spring-security-passkey/account/password" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="lock" />
             <span>Password</span>
           </b-dropdown-item>
-          <b-dropdown-item to="/account/sessions" v-if="authenticated" active-class="active">
+          <b-dropdown-item to="/spring-security-passkey/account/sessions" v-if="authenticated" active-class="active">
             <font-awesome-icon icon="cloud" />
             <span>Sessions</span>
           </b-dropdown-item>
@@ -97,7 +97,7 @@
             <font-awesome-icon icon="sign-in-alt" />
             <span>Sign in</span>
           </b-dropdown-item>
-          <b-dropdown-item data-cy="register" to="/register" id="register" v-if="!authenticated" active-class="active">
+          <b-dropdown-item data-cy="register" to="/spring-security-passkey/register" v-if="!authenticated" active-class="active">
             <font-awesome-icon icon="user-plus" />
             <span>Register</span>
           </b-dropdown-item>

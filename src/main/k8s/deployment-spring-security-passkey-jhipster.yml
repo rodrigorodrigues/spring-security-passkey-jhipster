@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-security-passkey-jhipster-service
+  annotations:
+    cloud.google.com/app-protocols: '{"https-port":"HTTPS","http-port":"HTTP"}'
+  labels:
+    app: spring-security-passkey-jhipster-service
+    spring-boot: 'true'
+spec:
+  ports:
+    - name: https-port
+      port: 8443
+    - name: http-port
+      port: 8080
+  selector:
+    app: spring-security-passkey-jhipster-service
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-security-passkey-jhipster-service
+spec:
+  selector:
+    matchLabels:
+      app: spring-security-passkey-jhipster-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: spring-security-passkey-jhipster-service
+        version: v1
+    spec:
+      containers:
+        - name: spring-security-passkey-jhipster-service
+          image: fielcapao/spring-security-passkey-jhipster:latest
+          resources:
+            requests:
+              memory: '256Mi'
+            limits:
+              memory: '512Mi'
+          env:
+            - name: SPRING_CLOUD_BOOTSTRAP_ENABLED
+              value: 'true'
+            - name: JAVA_OPTS
+              value: --enable-preview -Xss256K -Xms1M -XX:+UseSerialGC -Djava.compiler=none -XX:ReservedCodeCacheSize=2496k -XX:MaxDirectMemorySize=1M -Xms256m -Xmx512m
+            - name: SERVER_PORT
+              value: '8080'
+            - name: SPRING_PROFILES_ACTIVE
+              value: prod
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/ps_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: ps_user
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: SecurePassword
+            - name: SERVER_SERVLET_CONTEXT_PATH
+              value: /spring-security-passkey
+            - name: SPRING_CLOUD_KUBERNETES_ENABLED
+              value: 'true'
+            - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAMESPACE
+              value: 'default'
+            - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+              value: 'spring-security-passkey-jhipster-service'
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 1000
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 1000
+            periodSeconds: 5

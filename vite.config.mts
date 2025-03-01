@@ -9,6 +9,7 @@ const swaggerUiPath = getAbsoluteFSPath();
 
 // eslint-disable-next-line prefer-const
 const config = defineConfig({
+  base: '/spring-security-passkey',
   plugins: [
     vue(),
     viteStaticCopy({
@@ -46,7 +47,7 @@ const config = defineConfig({
   },
   define: {
     I18N_HASH: '"generated_hash"',
-    SERVER_API_URL: '"/"',
+    SERVER_API_URL: '"/spring-security-passkey/"',
     APP_VERSION: `"${process.env.APP_VERSION ? process.env.APP_VERSION : 'DEV'}"`,
   },
   server: {

@@ -1,14 +1,14 @@
 <template>
   <div>
-    <b-dropdown-item to="/blog">
+    <b-dropdown-item to="/spring-security-passkey/blog">
       <font-awesome-icon icon="asterisk" />
       <span>Blog</span>
     </b-dropdown-item>
-    <b-dropdown-item to="/post">
+    <b-dropdown-item to="/spring-security-passkey/post">
       <font-awesome-icon icon="asterisk" />
       <span>Post</span>
     </b-dropdown-item>
-    <b-dropdown-item to="/tag">
+    <b-dropdown-item to="/spring-security-passkey/tag">
       <font-awesome-icon icon="asterisk" />
       <span>Tag</span>
     </b-dropdown-item>
