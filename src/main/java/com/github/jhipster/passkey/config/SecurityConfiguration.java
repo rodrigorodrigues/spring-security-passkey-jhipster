@@ -48,9 +48,16 @@ public class SecurityConfiguration {
 
     private final RememberMeServices rememberMeServices;
 
-    public SecurityConfiguration(RememberMeServices rememberMeServices, JHipsterProperties jHipsterProperties) {
+    private final ApplicationProperties applicationProperties;
+
+    public SecurityConfiguration(
+        RememberMeServices rememberMeServices,
+        JHipsterProperties jHipsterProperties,
+        ApplicationProperties applicationProperties
+    ) {
         this.rememberMeServices = rememberMeServices;
         this.jHipsterProperties = jHipsterProperties;
+        this.applicationProperties = applicationProperties;
     }
 
     @Bean
@@ -60,6 +67,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
+        ApplicationProperties.WebAuthn webAuthn = applicationProperties.getWebAuthn();
         http
             .cors(withDefaults())
             .csrf(csrf ->
@@ -121,15 +129,11 @@ public class SecurityConfiguration {
                     .failureHandler((request, response, exception) -> response.setStatus(HttpStatus.UNAUTHORIZED.value()))
                     .permitAll()
             )
-            .webAuthn(webAuthn ->
-                webAuthn
-                    .rpName("Spring Security Relying Party")
-                    .rpId("localhost")
-                    .allowedOrigins("http://localhost:8080", "http://localhost:9000")
-            )
+            .webAuthn(w -> w.rpName(webAuthn.getRpName()).rpId(webAuthn.getRpId()).allowedOrigins(webAuthn.getAllowedOrigins()))
             .logout(logout ->
                 logout.logoutUrl("/api/logout").logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler()).permitAll()
             );
+
         return http.build();
     }
 
