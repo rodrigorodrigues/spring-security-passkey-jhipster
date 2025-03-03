@@ -11,6 +11,7 @@ services:
       - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgresql:5432/jhipsterPasskey
       - SERVER_SERVLET_CONTEXT_PATH=/spring-security-passkey
       - BASE_URL=/spring-security-passkey
+      - APPLICATION_WEB_AUTHN_RP_ID=spendingbetter.com
     ports:
       - 127.0.0.1:8080:8080
     healthcheck:

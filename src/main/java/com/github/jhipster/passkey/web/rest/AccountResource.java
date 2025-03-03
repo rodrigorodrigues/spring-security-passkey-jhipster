@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.webauthn.api.Bytes;
 import org.springframework.security.web.webauthn.api.CredentialRecord;
 import org.springframework.security.web.webauthn.api.PublicKeyCredentialUserEntity;
 import org.springframework.security.web.webauthn.management.UserCredentialRepository;
@@ -283,6 +284,11 @@ public class AccountResource {
                 .toList();
         }
         return credentialRecords;
+    }
+
+    @DeleteMapping("/account/passkeys/{credentialId}")
+    public void deletePasskey(@PathVariable("credentialId") String credentialId) {
+        userCredentialRepository.delete(Bytes.fromBase64(credentialId));
     }
 
     public record CredentialRecordDto(String id, String label, Instant created, Instant lastUsed, long signatureCount) {

@@ -31,5 +31,3 @@ CREATE TABLE IF NOT EXISTS credentials_record
     public_key_cose             BYTEA        NOT NULL,
     transports                  TEXT
 );
-
-select * from jhi_user;

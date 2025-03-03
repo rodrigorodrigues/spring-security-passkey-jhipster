@@ -60,7 +60,7 @@ spec:
               value: 'true'
             - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAMESPACE
               value: 'default'
-            - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+            - name: SPRING_APPLICATION_NAME
               value: 'spring-security-passkey-jhipster-service'
           ports:
             - containerPort: 8080

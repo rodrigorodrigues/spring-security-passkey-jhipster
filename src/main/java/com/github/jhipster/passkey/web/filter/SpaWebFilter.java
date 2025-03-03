@@ -22,7 +22,7 @@ public class SpaWebFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
         // Request URI includes the contextPath if any, removed it.
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        LOG.info("pSpaWebFilter:ath: {}", path);
+        LOG.debug("pSpaWebFilter:ath: {}", path);
         if (
             !path.startsWith("/api") &&
             !path.startsWith("/management") &&
